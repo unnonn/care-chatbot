@@ -1,0 +1,25 @@
+{% extends "_base.html" %}
+{% block title %}アポイントを確定しました{% endblock %}
+{% block content %}
+<h1>ご予約ありがとうございます</h1>
+
+<div class="ok">{{ guest_name }} 様のアポイントを確定しました。</div>
+
+<div class="card">
+  <p>
+    <strong>{{ event_summary }}</strong><br />
+    {{ event_start.strftime('%Y-%m-%d (%a) %H:%M') }} 〜 {{ event_end.strftime('%H:%M') }}<br />
+    場所: {{ target_location.label }}
+  </p>
+
+  {% if meet_link %}
+    <p>Google Meet リンク: <a href="{{ meet_link }}">{{ meet_link }}</a></p>
+  {% endif %}
+
+  {% if html_link %}
+    <p class="muted"><a href="{{ html_link }}">Googleカレンダーで予定を開く</a></p>
+  {% endif %}
+
+  <p><a class="button" href="/book">続けて別のアポイントを取る</a></p>
+</div>
+{% endblock %}

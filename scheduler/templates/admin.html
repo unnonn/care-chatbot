@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+{% block title %}スケジューラ管理{% endblock %}
+{% block content %}
+<h1>スケジューラ管理</h1>
+
+<div class="card">
+  <h2>Googleカレンダー連携</h2>
+  {% if authorized %}
+    <div class="ok">連携済みです。</div>
+    <p>
+      再連携が必要な場合は、もう一度認可フローを実行してください。
+      <a class="button secondary" href="/oauth2/start?token={{ admin_token_value }}">再認可する</a>
+    </p>
+  {% else %}
+    <div class="error">まだ連携されていません。下のボタンから Google ログインを行ってください。</div>
+    <p>
+      <a class="button" href="/oauth2/start?token={{ admin_token_value }}">Googleで連携する</a>
+    </p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>公開予約URL</h2>
+  <p>このURLを相手に共有してください:</p>
+  <p><code>{{ booking_url }}</code></p>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "_base.html" %}
+{% block title %}アポイント内容の入力{% endblock %}
+{% block content %}
+<h1>アポイント内容の入力</h1>
+
+<div class="card">
+  <p>
+    <strong>{{ chosen_location.label }}</strong>
+    <span class="badge">{{ chosen_duration }} 分</span><br />
+    {{ slot_start.strftime('%Y-%m-%d (%a) %H:%M') }} 〜 {{ slot_end.strftime('%H:%M') }}
+  </p>
+
+  <form method="post" action="/book/confirm">
+    <input type="hidden" name="location" value="{{ chosen_location.key }}" />
+    <input type="hidden" name="duration" value="{{ chosen_duration }}" />
+    <input type="hidden" name="slot_start" value="{{ slot_start.isoformat() }}" />
+
+    <label for="guest_name">お名前 <span class="muted">(必須)</span></label>
+    <input type="text" id="guest_name" name="guest_name" required />
+
+    <label for="guest_email">メールアドレス <span class="muted">(任意 / 入力するとカレンダー招待と{% if chosen_location.is_online %}Meet URL{% else %}場所の案内{% endif %}が届きます)</span></label>
+    <input type="email" id="guest_email" name="guest_email" />
+
+    <label for="purpose">用件・伝えておきたいこと <span class="muted">(任意)</span></label>
+    <textarea id="purpose" name="purpose"></textarea>
+
+    <div style="margin-top: 16px;">
+      <button type="submit">この内容で予約する</button>
+      <a class="button secondary" href="/book">戻る</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "_base.html" %}
+{% block title %}{{ host_name }}さんとのアポイント予約{% endblock %}
+{% block content %}
+<h1>{{ host_name }}さんとのアポイント予約</h1>
+<p class="muted">場所と所要時間をお選びください。空き時間は{{ host_name }}さんのGoogleカレンダーと、拠点間の移動時間を考慮して自動表示します。</p>
+
+{% if error %}
+  <div class="error">{{ error }}</div>
+{% endif %}
+
+<form method="post" action="/book/slots" class="card">
+  <h2>1. 場所と所要時間</h2>
+  <label for="location">場所</label>
+  <select id="location" name="location" required>
+    {% for loc in locations %}
+      <option value="{{ loc.key }}"
+        {% if chosen_location and chosen_location.key == loc.key %}selected{% endif %}>
+        {{ loc.label }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label for="duration">所要時間</label>
+  <select id="duration" name="duration" required>
+    {% for d in durations %}
+      <option value="{{ d }}"
+        {% if chosen_duration == d %}selected{% endif %}>{{ d }} 分</option>
+    {% endfor %}
+  </select>
+
+  <div style="margin-top: 16px;">
+    <button type="submit">空き時間を表示</button>
+  </div>
+</form>
+
+{% if slots_by_day is not none %}
+  <div class="card">
+    <h2>2. 候補から時間を選択
+      {% if chosen_location %}<span class="badge">{{ chosen_location.label }}</span>{% endif %}
+      {% if chosen_duration %}<span class="badge">{{ chosen_duration }} 分</span>{% endif %}
+    </h2>
+
+    {% if slots_by_day %}
+      {% for date_key, slots in slots_by_day.items() %}
+        <div class="day-block">
+          <div class="day-heading">{{ date_key }}（{{ slots[0].start.strftime('%a') }}）</div>
+          <div class="slot-grid">
+            {% for slot in slots %}
+              <form method="post" action="/book/confirm_form" style="margin:0;">
+                <input type="hidden" name="location" value="{{ chosen_location.key }}" />
+                <input type="hidden" name="duration" value="{{ chosen_duration }}" />
+                <input type="hidden" name="slot_start" value="{{ slot.iso_start }}" />
+                <button type="submit">{{ slot.time_label }}</button>
+              </form>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="muted">この条件で表示できる候補が見つかりませんでした。場所や所要時間を変えて再度お試しください。</p>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}
