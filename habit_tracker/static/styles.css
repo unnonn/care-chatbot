@@ -1,0 +1,22 @@
+/* Small overrides on top of Tailwind */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+/* Drag ghost / chosen states */
+.sortable-ghost {
+  opacity: 0.4;
+}
+.sortable-chosen {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Tabular numbers for stat values */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
