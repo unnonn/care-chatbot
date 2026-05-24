@@ -19,4 +19,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 body {
   -webkit-tap-highlight-color: transparent;
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: max(env(safe-area-inset-bottom), 24px);
+}
+
+/* Pull-to-refresh feels nicer when disabled in standalone mode */
+@media (display-mode: standalone) {
+  html, body { overscroll-behavior-y: contain; }
 }

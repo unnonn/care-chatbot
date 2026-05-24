@@ -1,0 +1,17 @@
+**/__pycache__
+**/*.pyc
+**/*.pyo
+.env
+.env.*
+data/*.db
+data/*.db-journal
+.git
+.gitignore
+.venv
+node_modules
+Procfile
+fly.toml
+.dockerignore
+Dockerfile
+README.md
+deploy.sh

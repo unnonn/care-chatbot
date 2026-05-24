@@ -1,7 +1,10 @@
 import logging
+import mimetypes
 from contextlib import asynccontextmanager
 from datetime import date
 from pathlib import Path
+
+mimetypes.add_type("application/manifest+json", ".webmanifest")
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
