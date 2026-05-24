@@ -15,57 +15,58 @@ iPhoneのホーム画面にPWAとして追加して、ネイティブアプリ�
 
 ---
 
-## iPhoneで使えるようになるまで（一番簡単な手順）
+## iPhoneで使えるようになるまで
 
-### ステップ 1: Fly.io にデプロイする（初回1回だけ・PC作業）
+### Windowsの場合：ワンライナー自動デプロイ（推奨）
 
-Mac/Linux の場合:
+事前準備:
+1. **Fly.io アカウント**を作成 → https://fly.io/app/sign-up （カード登録必須・無料枠内なら課金なし）
+2. **Resend アカウント**を作成 → https://resend.com/api-keys で **API Key** を発行してコピー（`re_xxxxxxxx...`）
+
+PowerShell（管理者でなくてOK）を開いて以下を貼り付け実行:
+
+```powershell
+iex (iwr https://raw.githubusercontent.com/unnonn/care-chatbot/claude/habit-tracking-app-qVdZm/habit_tracker/windows-deploy.ps1 -UseBasicParsing).Content
+```
+
+スクリプトが対話形式で以下を自動でやります:
+- flyctl の自動インストール（既にあればスキップ）
+- Fly.io ログイン（ブラウザが自動で開く）
+- ソースコード自動ダウンロード（Git不要）
+- アプリ作成 → 東京リージョンに永続ボリューム作成
+- Resend APIキーを secret に登録
+- ビルド & デプロイ
+- 完了後、PCブラウザで自動オープン
+
+入力するのは2つだけ:
+- **アプリ名**（例: `habit-yourname-2026`、英数小文字とハイフン）
+- **Resend API Key**（事前準備2でコピーしたもの）
+
+完了後表示される `https://habit-xxx.fly.dev` を iPhone Safari で開いて「ホーム画面に追加」してください。
+
+### Mac/Linux の場合
 
 ```bash
-# (1) flyctl をインストール
-curl -L https://fly.io/install.sh | sh
-export FLYCTL_INSTALL="$HOME/.fly"
-export PATH="$FLYCTL_INSTALL/bin:$PATH"
+# (1) flyctl インストール
+brew install flyctl   # またはMacで brew が無ければ: curl -L https://fly.io/install.sh | sh
 
-# (2) Fly.io にサインアップ／ログイン（クレジットカード登録あり・無料枠で運用可）
-fly auth signup    # 既存アカウントなら fly auth login
+# (2) Fly.io ログイン（ブラウザが開く）
+fly auth login
 
-# (3) このリポジトリの habit_tracker/ ディレクトリに入って実行
-cd habit_tracker
+# (3) リポジトリ取得 & デプロイ
+git clone -b claude/habit-tracking-app-qVdZm https://github.com/unnonn/care-chatbot.git
+cd care-chatbot/habit_tracker
 ./deploy.sh
 ```
 
-Windows (PowerShell) の場合:
+`./deploy.sh` が以下を対話形式で実行: アプリ作成 → 東京ボリューム作成 → Resend キー登録 → デプロイ。
 
-```powershell
-iwr https://fly.io/install.ps1 -useb | iex
-fly auth signup
-cd habit_tracker
-bash deploy.sh
-```
+### iPhoneでホーム画面に追加
 
-`./deploy.sh` が以下を自動でやります:
-
-1. グローバル一意なアプリ名を聞いて作成
-2. Tokyo (nrt) リージョンに 1GB の永続ボリュームを作成（SQLite用）
-3. Resend APIキーを聞いて secret に設定
-4. ビルド & デプロイ
-
-完了するとURL（例: `https://habit-tracker-yourname.fly.dev`）が表示されます。
-
-### ステップ 2: iPhone Safari で開く → ホーム画面に追加
-
-1. iPhone の Safari で上記URLを開く
-2. 画面下の共有ボタン（□に↑）をタップ
-3. **「ホーム画面に追加」** を選択 → 「追加」
-4. ホーム画面に「習慣」アイコンが出現。タップすると Safari UI なしのフルスクリーンで起動
-
-### ステップ 3: アプリ内で通知メールを設定
-
-1. アプリ右上の歯車アイコンをタップ
-2. 通知先メールアドレスを入力
-3. 「翌日記入忘れ時にメール通知」をON → 保存
-4. 「通知テスト」ボタンで実際に届くか確認
+1. 表示された `https://〜.fly.dev` を iPhone Safari で開く（PCからLINE等で自分宛に送ると楽）
+2. 画面下の共有ボタン（□↑）→ **「ホーム画面に追加」** → 追加
+3. ホーム画面の「習慣」アイコンをタップ → フルスクリーン起動
+4. アプリ内右上の歯車 → 通知先メールアドレス入力 → 保存 → 「通知テスト」で送信確認
 
 これで毎朝 10:00 JST に前日のチェック忘れがあるとメールが届きます。
 
